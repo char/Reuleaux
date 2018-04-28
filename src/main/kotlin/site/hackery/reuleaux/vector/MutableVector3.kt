@@ -3,15 +3,15 @@ package site.hackery.reuleaux.vector
 class MutableVector3(x: Double, y: Double, z: Double) : Vector3(x, y, z) {
     override var x: Double
         get() = super.x
-        set(value) { super.x = value }
+        public set(value) { super.x = value }
 
     override var y: Double
         get() = super.y
-        set(value) { super.y = value }
+        public set(value) { super.y = value }
 
     override var z: Double
         get() = super.z
-        set(value) { super.z = value }
+        public set(value) { super.z = value }
 
     fun toVector3(): Vector3 {
         return Vector3(x, y, z)

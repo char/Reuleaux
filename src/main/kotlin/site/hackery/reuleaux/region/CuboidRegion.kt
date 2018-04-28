@@ -1,6 +1,9 @@
 package site.hackery.reuleaux.region
 
+import site.hackery.reuleaux.vector.MutableVector3
 import site.hackery.reuleaux.vector.Vector3
+import kotlin.coroutines.experimental.buildIterator
+import kotlin.coroutines.experimental.buildSequence
 
 class CuboidRegion(pos1: Vector3, pos2: Vector3) {
     val min: Vector3 = Vector3(Math.min(pos1.x, pos2.x), Math.min(pos1.y, pos2.y), Math.min(pos1.z, pos2.z))
@@ -21,7 +24,7 @@ class CuboidRegion(pos1: Vector3, pos2: Vector3) {
                 && (position.z >= min.z && position.z <= max.z);
     }
 
-    fun getContainedPoints(gridSize: Double = 1.0): List<Vector3> {
+    fun iterateContainedPoints(gridSize: Double = 1.0): Iterator<MutableVector3> {
         val startX = Math.floor(min.x / gridSize) * gridSize
         val startY = Math.floor(min.y / gridSize) * gridSize
         val startZ = Math.floor(min.z / gridSize) * gridSize
@@ -30,23 +33,35 @@ class CuboidRegion(pos1: Vector3, pos2: Vector3) {
         val endY = Math.floor(max.y / gridSize) * gridSize
         val endZ = Math.floor(max.z / gridSize) * gridSize
 
+        val vector3 = MutableVector3(startX, startY, startZ)
+
+        return buildIterator {
+            with (vector3) {
+                x = startX
+                while (x <= endX) {
+                    y = startY
+                    while (y <= endY) {
+                        z = startZ
+                        while (z <= endZ) {
+                            yield(this)
+
+                            z += gridSize
+                        }
+
+                        y += gridSize
+                    }
+
+                    x += gridSize
+                }
+            }
+        }
+    }
+
+    fun getContainedPoints(gridSize: Double = 1.0): List<Vector3> {
         val points = mutableListOf<Vector3>()
 
-        var x = startX
-        while (x <= endX) {
-            var y = startY
-            while (y <= endY) {
-                var z = startZ
-                while (z <= endZ) {
-                    points.add(Vector3(x, y, z))
-
-                    z += gridSize
-                }
-
-                y += gridSize
-            }
-
-            x += gridSize
+        for (point in iterateContainedPoints(gridSize)) {
+            points += point.toVector3()
         }
 
         return points
@@ -70,4 +85,4 @@ class CuboidRegion(pos1: Vector3, pos2: Vector3) {
 }
 
 operator fun CuboidRegion.contains(position: Vector3) = this.contains(position)
-operator fun CuboidRegion.iterator() = getContainedPoints().iterator()
+operator fun CuboidRegion.iterator() = iterateContainedPoints()
