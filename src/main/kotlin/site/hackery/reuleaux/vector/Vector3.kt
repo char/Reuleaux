@@ -156,6 +156,10 @@ open class Vector3(x: Double, y: Double, z: Double) {
 
         return super.equals(other)
     }
+
+    override fun toString(): String {
+        return "Vector3[x=$x, y=$y, z=$z]"
+    }
 }
 
 internal fun pythagoreanDistance(x: Double, y: Double, z: Double): Double {

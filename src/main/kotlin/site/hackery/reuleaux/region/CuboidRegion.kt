@@ -18,7 +18,7 @@ class CuboidRegion(pos1: Vector3, pos2: Vector3) {
         return 2 * (size.x * size.y + size.x * size.z + size.y * size.z)
     }
 
-    fun contains(position: Vector3): Boolean {
+    operator fun contains(position: Vector3): Boolean {
         return (position.x >= min.x && position.x <= max.x)
                 && (position.y >= min.y && position.y <= max.y)
                 && (position.z >= min.z && position.z <= max.z);
@@ -84,5 +84,4 @@ class CuboidRegion(pos1: Vector3, pos2: Vector3) {
     }
 }
 
-operator fun CuboidRegion.contains(position: Vector3) = this.contains(position)
 operator fun CuboidRegion.iterator() = iterateContainedPoints()
