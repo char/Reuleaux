@@ -13,6 +13,7 @@ group "site.hackery"
 version "0.1.1"
 
 apply plugin: "kotlin"
+apply plugin: "maven-publish"
 
 sourceCompatibility = 1.8
 
@@ -36,5 +37,18 @@ compileTestKotlin {
 kotlin {
     experimental {
         coroutines "enable"
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url uri("build/maven/")
+        }
     }
 }
